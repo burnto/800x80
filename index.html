@@ -1,11 +1,45 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta http-equiv="X-UA-Compatible" content="IE=edge">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title></title>
-</head>
-<body>
-</body>
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title></title>
+  </head>
+  <body>
+    <script src="https://cdn.jsdelivr.net/npm/p5@1.4.0/lib/p5.js"></script>
+    <script src="https://unpkg.com/p5.createloop@0.2.8/dist/p5.createloop.js"></script>
+
+    <script>
+      const seedX = 0.5;
+      const seedY = 0.6;
+      const noiseAmp = 0.5;
+      function setup() {
+        pixelDensity(1);
+        createCanvas(800, 80);
+        frameRate(60);
+        createLoop({
+          duration: 3,
+          gif: !!window.location.toString().match("gif"),
+        });
+        background(0);
+        noStroke();
+      }
+
+      function draw() {
+        background(0);
+
+        for (x = width + 10; x >= -10; x -= 20) {
+          fill(
+            map(Math.sin(animLoop.theta + x / 100), -1, 1, 40, 200),
+            map(Math.sin(animLoop.theta - x / 10), -1, 1, 40, 200),
+            map(Math.cos(animLoop.theta + x / 1000), -1, 1,  200, 240),
+            map(Math.cos(animLoop.theta + 1 + x / 10), -1, 1,  200, 240)
+          );
+          circle(x, height / 2, Math.sin(animLoop.theta + x / 10) * 70);
+          // blend(0, 0, 800, 80, 0, 0, 800, 80, ADD);
+        }
+      }
+    </script>
+  </body>
 </html>
