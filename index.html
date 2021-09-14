@@ -14,12 +14,18 @@
       const seedX = 0.5;
       const seedY = 0.6;
       const noiseAmp = 0.5;
+      const rad = 8;
+      const spacing = -5;
+      const arcAngle = 0.2 * Math.PI;
+      const metaFreq = 12;
+      const maxRotationCoeff = 5
+
       function setup() {
         pixelDensity(1);
         createCanvas(800, 80);
-        frameRate(60);
+        frameRate(30);
         createLoop({
-          duration: 3,
+          duration: 4,
           gif: !!window.location.toString().match("gif"),
         });
         background(0);
@@ -27,19 +33,36 @@
       }
 
       function draw() {
-        background(0);
-
-        for (x = width + 10; x >= -10; x -= 20) {
-          fill(
-            map(Math.sin(animLoop.theta + x / 100), -1, 1, 40, 200),
-            map(Math.sin(animLoop.theta - x / 10), -1, 1, 40, 200),
-            map(Math.cos(animLoop.theta + x / 1000), -1, 1,  200, 240),
-            map(Math.cos(animLoop.theta + 1 + x / 10), -1, 1,  200, 240)
-          );
-          circle(x, height / 2, Math.sin(animLoop.theta + x / 10) * 70);
-          // blend(0, 0, 800, 80, 0, 0, 800, 80, ADD);
+        background(0, 0, 0, 255);
+        noFill();
+        stroke(255, 255, 255, 200);
+        strokeWeight(.9);
+        let n = width / (rad + spacing);
+        let rows = height / (rad + spacing);
+        for (let i = -1; i < rows + 1; i++) {
+          push();
+          translate(0, i * (rad + spacing));
+          strip(n, rad, spacing, Math.PI * i/rows * 2);
+          pop();
         }
       }
+
+      function strip(n, radius, spacing, offsetAngle) {
+        for (let i = 0; i < n; i++) {
+          let x = i * (radius + spacing);
+          let startStop = (i % 2) ? [0, arcAngle] : [-1 * arcAngle, 0];
+          let sign = (i % 2) ? -1 : 1;
+          let yOff = sign * radius / 2;
+          push();
+          translate(x, yOff);
+          
+          let positionalMultiplier = Math.sin(metaFreq * (i / n) * Math.PI) * Math.sin(offsetAngle + animLoop.theta)/2 + 0.5
+          rotate(sign * (offsetAngle + animLoop.theta + positionalMultiplier * maxRotationCoeff));
+          arc(0, 0, radius, radius, startStop[0], startStop[1])
+          pop();
+        }
+      }
+
     </script>
   </body>
 </html>
